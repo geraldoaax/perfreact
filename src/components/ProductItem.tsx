@@ -25,9 +25,18 @@ function ProductItemComponent({ product }: ProductItemProps) {
  * lugar na memória
  */
 
+/**
+ * Cuidado com otimização prematura - Custo da comparação do memo
+ * Onde Utilizar
+ * 1. Componentes que são puros (pure funcional components) - Abstrair a parte visual
+ * 2. Componentes que renderizam muito - Render too often
+ * 3. Componente renderiza novamente com as mesmas props - re-renders with same props
+ * 4. Componte médio para grande - Medium to big size
+ */
+
 export const ProductItem = memo(
   ProductItemComponent,
   (prevProps, nextProps) => {
-    return Object.is(prevProps, nextProps);
+    return Object.is(prevProps.product, nextProps.product);
   }
 );
