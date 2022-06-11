@@ -1,21 +1,35 @@
-import { memo } from "react";
+import React, { memo, useState } from "react";
+import { AddProductToWishlistProps } from "./AddProductToWishlist";
+// import { AddProductToWishlist } from "./AddProductToWishlist";
 
+const AddProductToWishlist = React.lazy<AddProductToWishlistProps>(() => {
+  return import("./AddProductToWishlist");
+});
 interface ProductItemProps {
   product: {
     id: number;
     title: string;
     price: number;
+    priceFormatted: string;
   };
   onAddToWishlist: (id: number) => void;
 }
 
 function ProductItemComponent({ product, onAddToWishlist }: ProductItemProps) {
+  const [isAddingToWishlist, setIsAddingToWishlist] = useState(false);
+
   return (
     <div>
-      {product.title} - <strong>{product.price}</strong>
-      <button onClick={() => onAddToWishlist(product.id)}>
-        Add to wishlist
+      {product.title} - <strong>{product.priceFormatted}</strong>
+      <button onClick={() => setIsAddingToWishlist(true)}>
+        Adicionar aos favoritos
       </button>
+      {isAddingToWishlist === true && (
+        <AddProductToWishlist
+          onAddToWishlist={() => onAddToWishlist(product.id)}
+          onRequestClose={() => setIsAddingToWishlist(false)}
+        ></AddProductToWishlist>
+      )}
     </div>
   );
 }
@@ -23,7 +37,8 @@ function ProductItemComponent({ product, onAddToWishlist }: ProductItemProps) {
 export const ProductItem = memo(
   ProductItemComponent,
   (prevProps, nextProps) => {
-    return Object.is(prevProps.product, nextProps.product);
+    // return Object.is(prevProps.product, nextProps.product);
+    return lodash.isEqual(prevProps.product, nextProps.product);
   }
 );
 
